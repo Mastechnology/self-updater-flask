@@ -1,0 +1,2 @@
+# self-updater-flask
+test
