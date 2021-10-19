@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>mfgstudiosblog</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://rawgit.com/hippich/bower-semver/master/semver.min.js"></script>
+</head>
+
+<body>
+    <!-- burada post metodunu kullanarak çalışıyoruz -->
+    <form method="post" action="/">
+        <p>Latest tag: <span id="result"></span></p>
+        <p>
+            <!-- value olayı üzerinden hangi butona tıkladığımızı belirtiyoruz. -->
+            <button class="btn" type="submit" name="submit_button" value="about">About Page</button>
+        </p>
+        <p>
+            <button class="btn btn-info" type="submit" name="submit_button" value="mfg">Come back and see "mfg"
+                text</button>
+        </p>
+    </form>
+
+    <!-- burada jinja template ile name adında bir değişken gönderilmiş mi diye bakıyoruz. -->
+    {% if name %}
+    <br />
+    <br />
+    <h1>Hello {{name}}, good to see you!</h1>
+    {% endif %}
+
+</body>
+
+<script>
+    const gitHubPath = 'Mastechnology/2warrior1war';  // example repo
+    const url = 'https://api.github.com/repos/' + gitHubPath + '/tags';
+
+    $.get(url).done(data => {
+        const versions = data.sort((v1, v2) => semver.compare(v2.name, v1.name));
+        $('#result').html(versions[0].name);
+        console(versions[0].name)
+    });
+</script>
+
+<style>
+    .btn {
+        padding: 6px 12px;
+        border-radius: 4px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .btn-info {
+        background-color: #5bc0de;
+        border-color: #46b8da;
+        color: #fff;
+    }
+
+    .btn-info:hover,
+    .btn-info:focus,
+    .btn-info:acitive {
+        background-color: #31b0d5;
+        border-color: #269abc;
+        color: #fff;
+    }
+</style>
+
+</html>
