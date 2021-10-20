@@ -8,6 +8,7 @@
 </head>
 
 <body>
+    <div class="thin-ui-notification-bar trial-bar"></div>
     <!-- burada post metodunu kullanarak çalışıyoruz -->
     <form method="post" action="/">
         <p>Latest tag: <span id="result"></span></p>
@@ -16,29 +17,78 @@
             <button class="btn" type="submit" name="submit_button" value="about">About Page</button>
         </p>
         <p>
-            <button class="btn btn-info" type="submit" name="submit_button" value="mfg">Come back and see "mfg"
-                text</button>
+            <button class="btn btn-info" type="submit" name="submit_button" value="mfg">app -v</button>
         </p>
     </form>
 
     <!-- burada jinja template ile name adında bir değişken gönderilmiş mi diye bakıyoruz. -->
-    {% if name %}
+    {% if thisVersion %}
     <br />
     <br />
-    <h1>Hello {{name}}, good to see you!</h1>
+    <h1>Your version is {{thisVersion}}, thats all!</h1>
     {% endif %}
 
 </body>
 
 <script>
-    const gitHubPath = 'Mastechnology/2warrior1war';  // example repo
+    var version = 0.5;
+    const gitHubPath = 'Mastechnology/self-updater-flask';  // example repo
     const url = 'https://api.github.com/repos/' + gitHubPath + '/tags';
 
     $.get(url).done(data => {
         const versions = data.sort((v1, v2) => semver.compare(v2.name, v1.name));
         $('#result').html(versions[0].name);
-        console(versions[0].name)
+        var githubVersion = versions[0].name;
+        githubVersion = githubVersion.slice(1);
+        console.log(githubVersion)
+
+        if (githubVersion > version) {
+            console.log("Same version!");
+            notificationBannerJS('.trial-bar', {
+                text: '🥳 Yeni bir güncellemeniz var! İndirmek için <a href="#" onclick="downloadNewVersion();">tıklayın.</a> 🥳  <a href="#" style="text-decoration:none; font-family:Arial;" onclick="closeTrialBar(\'.trial-bar\')" >ⓧ</a>'
+            });
+        } else {
+            notificationBannerJS('.trial-bar', {
+                text: '🤩 Hoşgeldiniz!  <a href="#" style="text-decoration:none; font-family:Arial;" onclick="closeTrialBar(\'.trial-bar\')" >ⓧ</a>'
+            });
+        }
     });
+
+    function notificationBannerJS(element, options) {
+        let settings = {
+            height: "20px",
+            padding: "10px",
+            background: "#7ee68b",
+            width: "100%",
+            position: "bottom",
+            text: ""
+        };
+
+        let bar = document.querySelector(element);
+        bar.innerHTML = options.text;
+
+        setTimeout(function () {
+            bar.style.transform = "translateY(0)";
+            document.body.style.transition = "padding-top 0.5s ease-out";
+            document.body.style.paddingTop = bar.offsetHeight + "px";
+
+        }, 3000);
+
+        document.body.style.transition = null;
+    }
+
+    function closeTrialBar(element) {
+        let bar = document.querySelector(element);
+        bar.style.transform = "translateY(0)";
+        document.body.style.transition = "padding-top 0.5s ease-out";
+        document.body.style.paddingTop = "0px";
+        bar.style.display = "none";
+    }
+
+    function downloadNewVersion() {
+        console.log("Now downloading new version...");
+    }
+
 </script>
 
 <style>
@@ -61,6 +111,19 @@
         background-color: #31b0d5;
         border-color: #269abc;
         color: #fff;
+    }
+
+    .thin-ui-notification-bar {
+        position: fixed;
+        padding: 16px 8px;
+        background-color: rgb(121, 198, 152);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+        width: 100%;
+        top: 0;
+        left: 0;
+        text-align: center;
+        transition: all 0.5s ease-out;
+        transform: translateY(-72px);
     }
 </style>
 
