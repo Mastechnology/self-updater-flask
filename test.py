@@ -39,6 +39,7 @@ except OSError as e:
     print("Error: %s - %s." % (e.filename, e.strerror))
 
 
+# yeni dosyayi indiriyoruz
 def git(*args):
     return subprocess.check_call(["git"] + list(args))
 
@@ -46,4 +47,19 @@ def git(*args):
 os.chdir(pwd)
 git("clone", "https://github.com/Mastechnology/self-updater-flask.git", "-b", "v0.6.2")
 
-# os.chdir(f"{dukkan[:7]}")
+# gerekli dosyalari geri indiriyoruz ve gereksizleri siliyoruz.
+target = f"{dukkan}/.programFiles/encrypted.txt"
+origin = f"{pwd}/.programFiles/encrypted.txt"
+shutil.copyfile(original, target)
+target = f"{dukkan}/.programFiles/key.key"
+origin = f"{pwd}/.programFiles/key.key"
+shutil.copyfile(original, target)
+target = f"{dukkan}/neka_sla.db"
+origin = f"{pwd}/neka_sla.db"
+shutil.copyfile(original, target)
+try:
+    shutil.rmtree(f"{pwd}/.programFiles")
+except OSError as e:
+    print("Error: %s - %s." % (e.filename, e.strerror))
+os.remove(f"{pwd}/neka_sla.db")
+os.remove(f"{pwd}/test.py")
