@@ -54,13 +54,13 @@ except:
 
 # gerekli dosyalari geri indiriyoruz ve gereksizleri siliyoruz.
 target = f"{dukkan}/.programFiles/encrypted.txt"
-origin = f"{pwd}/.programFiles/encrypted.txt"
+original = f"{pwd}/.programFiles/encrypted.txt"
 shutil.copyfile(original, target)
 target = f"{dukkan}/.programFiles/key.key"
-origin = f"{pwd}/.programFiles/key.key"
+original = f"{pwd}/.programFiles/key.key"
 shutil.copyfile(original, target)
 target = f"{dukkan}/neka_sla.db"
-origin = f"{pwd}/neka_sla.db"
+original = f"{pwd}/neka_sla.db"
 shutil.copyfile(original, target)
 try:
     shutil.rmtree(f"{pwd}/.programFiles")
