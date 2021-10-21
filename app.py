@@ -82,4 +82,4 @@ def updating():
 if __name__ == "__main__":
     # Flask sınıfının run() yöntemi uygulamayı çalıştırır
     # yerel geliştirme sunucusunda.
-    app.run(host="0.0.0.0", port="7000", threaded=True)
+    app.run(host="0.0.0.0", port="8000", threaded=True)
