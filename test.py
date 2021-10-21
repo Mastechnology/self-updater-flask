@@ -45,7 +45,7 @@ def git(*args):
 
 
 os.chdir(pwd)
-git("clone", "https://github.com/Mastechnology/self-updater-flask.git", "-b", "v0.6.7")
+git("clone", "https://github.com/Mastechnology/self-updater-flask.git", "-b", "v0.6.8")
 
 try:
     os.mkdir(f"{pwd}/.programFiles")
