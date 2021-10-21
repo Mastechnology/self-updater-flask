@@ -2,8 +2,21 @@ import shutil
 import subprocess
 import os
 import sys
+import sqlite3
 
 updateVersion = sys.argv[1]
+global imlec
+
+profileArray = []
+database_connect = sqlite3.connect("neka_sla.db")
+imlec = database_connect.cursor()
+
+imlec.execute(f"""UPDATE Version_Tag SET version = '{updateVersion}' WHERE id = 1;""")
+files = imlec.fetchall()
+database_connect.commit()
+database_connect.close()
+
+
 print("I am child! " + updateVersion)
 os.system("pkill -f app.py")
 # ilk once bir isimleri ayarliyoruz.
