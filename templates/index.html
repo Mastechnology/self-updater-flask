@@ -7,7 +7,7 @@
     <script src="https://rawgit.com/hippich/bower-semver/master/semver.min.js"></script>
 </head>
 
-<body>
+<body onload="start();">
     <div class="thin-ui-notification-bar trial-bar"></div>
     <!-- burada post metodunu kullanarak çalışıyoruz -->
     <form method="post" action="/">
@@ -31,28 +31,10 @@
 </body>
 
 <script>
-    var version = 0.5;
+    var version = "0.1.1";
+    var githubVersion = "";
     const gitHubPath = 'Mastechnology/self-updater-flask';  // example repo
     const url = 'https://api.github.com/repos/' + gitHubPath + '/tags';
-
-    $.get(url).done(data => {
-        const versions = data.sort((v1, v2) => semver.compare(v2.name, v1.name));
-        $('#result').html(versions[0].name);
-        var githubVersion = versions[0].name;
-        githubVersion = githubVersion.slice(1);
-        console.log(githubVersion)
-
-        if (githubVersion > version) {
-            console.log("Same version!");
-            notificationBannerJS('.trial-bar', {
-                text: '🥳 Yeni bir güncellemeniz var! İndirmek için <a href="#" onclick="downloadNewVersion();">tıklayın.</a> 🥳  <a href="#" style="text-decoration:none; font-family:Arial;" onclick="closeTrialBar(\'.trial-bar\')" >ⓧ</a>'
-            });
-        } else {
-            notificationBannerJS('.trial-bar', {
-                text: '🤩 Hoşgeldiniz!  <a href="#" style="text-decoration:none; font-family:Arial;" onclick="closeTrialBar(\'.trial-bar\')" >ⓧ</a>'
-            });
-        }
-    });
 
     function notificationBannerJS(element, options) {
         let settings = {
@@ -85,8 +67,39 @@
         bar.style.display = "none";
     }
 
-    function downloadNewVersion() {
+    function downloadNewVersion(x) {
         console.log("Now downloading new version...");
+        $.getJSON('/updating', {
+            newVersion: x,
+        }, function (data) {
+            var v = data.newVersion;
+        });
+    }
+
+    function start() {
+        $.getJSON('/getTheVersion', function (data) {
+            var v = data.thisVersion;
+            window.version = v
+            console.log(v + " is our verison")
+            $.get(url).done(data => {
+                const versions = data;
+                $('#result').html(versions[0].name);
+                window.githubVersion = versions[0].name;
+                window.githubVersion = githubVersion.slice(1);
+                console.log(window.githubVersion)
+
+                if (window.githubVersion > version) {
+                    console.log("Same version!");
+                    notificationBannerJS('.trial-bar', {
+                        text: '🥳 Yeni bir güncellemeniz var! İndirmek için <a href="#" onclick="downloadNewVersion(\'' + window.githubVersion + '\');">tıklayın.</a> 🥳  <a href="#" style="text-decoration:none; font-family:Arial;" onclick="closeTrialBar(\'.trial-bar\')" >ⓧ</a>'
+                    });
+                } else {
+                    notificationBannerJS('.trial-bar', {
+                        text: '🤩 Hoşgeldiniz!  <a href="#" style="text-decoration:none; font-family:Arial;" onclick="closeTrialBar(\'.trial-bar\')" >ⓧ</a>'
+                    });
+                }
+            });
+        });
     }
 
 </script>

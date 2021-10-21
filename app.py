@@ -1,6 +1,7 @@
 # Ilk başta flask kütüphanemizi çağırıyoruz.
-from flask import Flask, redirect, url_for, request, render_template
+from flask import Flask, redirect, url_for, request, render_template, jsonify
 import sqlite3
+import subprocess
 
 global imlec
 
@@ -14,6 +15,7 @@ app = Flask(__name__)
 @app.route("/", methods=["POST", "GET"])
 # '/' URL, index() işlevine bağlıdır.
 def index():
+    global imlec
 
     # render_template ile beraber gönderilecek örnek bir değişken tanımladık.
     thisVersion = ""
@@ -41,11 +43,39 @@ def index():
             for file in files:
                 thisVersion = file[0]
                 print(file[0])
-                thisVersion = float(thisVersion[1:])
+                thisVersion = thisVersion[1:]
             return render_template("index.html", thisVersion=thisVersion)
 
     # normal açarken bu sayfa
     return render_template("index.html")
+
+
+@app.route("/getTheVersion", methods=["GET", "POST"])
+def getTheVersion():
+    global imlec
+    thisVersion = ""
+    database_connect = sqlite3.connect("neka_sla.db")
+    imlec = database_connect.cursor()
+    imlec.execute(
+        """
+                SELECT version FROM Version_Tag;
+                """
+    )
+    files = imlec.fetchall()
+
+    for file in files:
+        thisVersion = file[0]
+        print(file[0])
+        thisVersion = thisVersion[1:]
+    return jsonify(thisVersion=thisVersion)
+
+
+@app.route("/updating", methods=["GET", "POST"])
+def updating():
+    newVersion = str(request.args.get("newVersion", 0, type=str))
+    print(newVersion)
+    subprocess.call(f"python3 updateToNew.py v{newVersion} &", shell=True)
+    return jsonify(newVersion=newVersion)
 
 
 # ana sürücü işlevi
