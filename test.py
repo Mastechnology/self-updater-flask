@@ -69,4 +69,5 @@ except OSError as e:
 os.remove(f"{pwd}/neka_sla.db")
 os.remove(f"{pwd}/test.py")
 
-git("checkout", "-b", "origin/main")
+os.chdir(dukkan)
+git("checkout", "-b", "main")
