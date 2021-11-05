@@ -5,7 +5,6 @@ import subprocess
 
 global imlec
 
-
 # Flask yapıcısının adını alır.
 # geçerli modül (__name__) argüman olarak.
 app = Flask(__name__)
@@ -49,11 +48,12 @@ def index():
     # normal açarken bu sayfa
     return render_template("index.html")
 
-
+#burada şuanki versiyonu hakkkında bilgi alıyoruz.
 @app.route("/getTheVersion", methods=["GET", "POST"])
 def getTheVersion():
     global imlec
     thisVersion = ""
+    #veri tabanımıza bağlanıyoruz ilk başta.
     database_connect = sqlite3.connect("neka_sla.db")
     imlec = database_connect.cursor()
     imlec.execute(
@@ -67,13 +67,16 @@ def getTheVersion():
         thisVersion = file[0]
         print(file[0])
         thisVersion = thisVersion[1:]
+        #değerimizi bu şekilde alıp front-end'e yönlendiriyoruz.
     return jsonify(thisVersion=thisVersion)
 
-
+#bununla beraber başka bir python script'imizi çalıştırıyoruz.
 @app.route("/updating", methods=["GET", "POST"])
 def updating():
+    #ilk front-end'den versiyon değerimizi alıyoruz.
     newVersion = str(request.args.get("newVersion", 0, type=str))
     print(newVersion)
+    #sonrasında o değerle beraber kodumuzu çalıştırıyoruz ve güncellemeye başlıyoruz.
     subprocess.call(f"python3 updateToNew.py v{newVersion} &", shell=True)
     return jsonify(newVersion=newVersion)
 
