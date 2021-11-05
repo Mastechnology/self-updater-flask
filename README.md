@@ -1,2 +1,2 @@
 # self-updater-flask
-test deneme son
+Blog version
